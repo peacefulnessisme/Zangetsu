@@ -19,10 +19,6 @@ jobs:
           cp -r Zangetsu-1.9.8/* .
         fi
 
-    - name: Clean build cache and lockfile
-      run: |
-        rm -f pubspec.lock
-
     - name: Set up Java
       uses: actions/setup-java@v3
       with:
@@ -33,11 +29,6 @@ jobs:
       uses: subosito/flutter-action@v2
       with:
         channel: 'stable'
-
-    - name: Downgrade file_picker to compatible version
-      run: |
-        flutter pub remove file_picker || true
-        flutter pub add file_picker:^8.1.7
 
     - name: Install dependencies
       run: flutter pub get
