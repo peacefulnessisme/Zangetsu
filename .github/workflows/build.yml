@@ -14,8 +14,28 @@ jobs:
 
     - name: Unzip project files
       run: |
-        unzip -q Zangetsu-1.9.8.zip
-        cp -r Zangetsu-1.9.8/* . || true
+        unzip -o Zangetsu-1.9.8.zip
+        if [ -d "Zangetsu-1.9.8" ]; then
+          cp -r Zangetsu-1.9.8/* .
+        fi
+
+    - name: Fix pubspec.yaml duplicate file_picker
+      run: |
+        python3 -c "
+        with open('pubspec.yaml', 'r') as f:
+            lines = f.readlines()
+        seen = False
+        new_lines = []
+        for line in lines:
+            if 'file_picker:' in line:
+                if not seen:
+                    seen = True
+                    new_lines.append(line)
+            else:
+                new_lines.append(line)
+        with open('pubspec.yaml', 'w') as f:
+            f.writelines(new_lines)
+        "
 
     - name: Set up Java
       uses: actions/setup-java@v3
