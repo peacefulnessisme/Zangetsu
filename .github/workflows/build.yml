@@ -12,12 +12,16 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Unzip and setup workspace
+    - name: Unzip project
       run: |
         unzip -o Zangetsu-1.9.8.zip
         if [ -d "Zangetsu-1.9.8" ]; then
           cp -r Zangetsu-1.9.8/* .
         fi
+
+    - name: Clean build cache and lockfile
+      run: |
+        rm -f pubspec.lock
 
     - name: Set up Java
       uses: actions/setup-java@v3
@@ -30,8 +34,10 @@ jobs:
       with:
         channel: 'stable'
 
-    - name: Update file_picker version
-      run: flutter pub add file_picker:^12.1.2
+    - name: Downgrade file_picker to compatible version
+      run: |
+        flutter pub remove file_picker || true
+        flutter pub add file_picker:^8.1.7
 
     - name: Install dependencies
       run: flutter pub get
